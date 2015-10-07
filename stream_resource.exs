@@ -8,7 +8,7 @@ Stream.resource(
       _ -> { :halt, file }
     end
   end,
-  fn( file ) -> File.close!( file ) end
+  fn( file ) -> File.close( file ) end
 ) |> Enum.take(5)
 
 
