@@ -19,7 +19,12 @@ defmodule Parser do
 end
 
 stream = File.stream!( "taxes.dat", [ :read, :utf8 ] )
-header = stream |> Enum.take(1) |> List.first |> String.strip |> String.split(",") |> Enum.map &String.to_atom/1
+header = stream
+          |> Enum.take(1)
+            |> List.first
+              |> String.strip
+                |> String.split(",")
+                  |> Enum.map &String.to_atom/1
 data_stream = Stream.drop( stream, 1 )
 
 orders = Enum.map data_stream, fn( line ) ->
