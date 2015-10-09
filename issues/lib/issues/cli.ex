@@ -12,7 +12,7 @@ defmodule Issues.CLI do
     table of the last _n_ issues in the github project
   """
 
-  def run( argv ) do
+  def main( argv ) do
     argv
       |> parse_args
       |> process
