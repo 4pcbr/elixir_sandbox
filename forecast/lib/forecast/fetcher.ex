@@ -38,5 +38,9 @@ defmodule Forecast.Fetcher do
     { :error, reason }
   end
 
+  def parse_response(body) do
+    :erlsom.simple_form(body)
+  end
+
 end
 
