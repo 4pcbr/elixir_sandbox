@@ -25,7 +25,8 @@ defmodule Forecast.Fetcher do
   def handle_response({ :ok, %HTTPoison.Response{ status_code: 200, body: body } }) do
     Logger.info "Successful response"
     Logger.debug "Response body: #{body}"
-    { :ok, body }
+    { :ok, parsed_body, _ } = parse_response body
+    { :ok, parsed_body }
   end
 
   def handle_response({ :ok, %HTTPoison.Response{ status_code: 404, body: body } }) do

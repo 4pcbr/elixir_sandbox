@@ -24,7 +24,6 @@ defmodule FetcherTest do
     { :ok, parsed_body, _ } = :erlsom.simple_form(body)
     { tag_name, attributes, nested_tags } = parsed_body
     assert tag_name == 'note'
-    assert length(nested_tags) == 4
     assert [ 'to', 'from', 'heading', 'body' ] == Enum.map(nested_tags, fn({tag_name, _, _}) -> tag_name end)
   end
 
