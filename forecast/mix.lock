@@ -5,4 +5,5 @@
   "hackney": {:hex, :hackney, "1.3.2"},
   "httpoison": {:hex, :httpoison, "0.7.4"},
   "idna": {:hex, :idna, "1.0.2"},
+  "parsexml": {:git, "https://github.com/maxlapshin/parsexml.git", "6cbc58ca3c404b25f6775a0ebe8ee1e5a6a7e781", []},
   "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5"}}

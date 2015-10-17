@@ -40,7 +40,7 @@ defmodule Forecast.Fetcher do
   end
 
   def parse_response(body) do
-    :erlsom.simple_form(body)
+    :erlsom.simple_form(body, [{ :nameFun, fn(name, _, _) -> name; end }])
   end
 
 end
