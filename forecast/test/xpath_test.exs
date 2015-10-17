@@ -24,11 +24,10 @@ defmodule XpathTest do
 
   test "root element" do
     { :ok, xml, _ } = :erlsom.simple_form(sample_data)
-    { tag_name, attrs, content } = find(xml, "a")
+    [{ tag_name, attrs, content }] = find(xml, "a")
     assert tag_name == 'a'
     assert Enum.sort(attrs, &(elem(&1, 0) < elem(&2, 0))) == [{ 'k1', 'v1' }, { 'k2', 'v2' }]
   end
-
 
 end
 

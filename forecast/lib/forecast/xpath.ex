@@ -9,7 +9,7 @@ defmodule Forecast.Xpath do
 
   defp _find(_, []), do: []
   defp _find({ tag_name, attrs, children }, [lookup]) when tag_name == lookup do
-    { tag_name, attrs, children }
+    [{ tag_name, attrs, children }]
   end
   defp _find({ tag_name, _attrs, children }, [lookup | tail]) when tag_name == lookup do
     children
