@@ -1,4 +1,4 @@
-defmodule Forecast.Xpath do
+defmodule Forecast.DotPath do
 
   def find(xml, path) do
     _find(xml,
@@ -13,11 +13,10 @@ defmodule Forecast.Xpath do
   end
   defp _find({ tag_name, _attrs, children }, [lookup | tail]) when tag_name == lookup do
     children
-      |> Enum.map &(_find(&1, tail))
+      |> Enum.reduce [], &(&2 ++ _find(&1, tail))
   end
   defp _find({ _tag_name, _attrs, [] }, _lookup), do: []
   defp _find({ _tag_name, _attrs, _children }, _lookup), do: []
-  defp _find(_tag, []), do: []
 
 end
 
