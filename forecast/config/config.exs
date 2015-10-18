@@ -30,7 +30,7 @@ use Mix.Config
 #     import_config "#{Mix.env}.exs"
 
 config :forecast, yahoo_url:       "https://query.yahooapis.com/v1/public/yql?q=",
-                  yahoo_query:     "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\"%s\")",
+                  yahoo_query:     "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\"%s\") and u='c'",
                   yahoo_url_extra: "&format=xml&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
 
 config :logger, level: :info
