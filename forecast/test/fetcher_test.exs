@@ -22,7 +22,7 @@ defmodule FetcherTest do
     </note>
     """
     { :ok, parsed_body, _ } = :erlsom.simple_form(body)
-    { tag_name, attributes, nested_tags } = parsed_body
+    { tag_name, _, nested_tags } = parsed_body
     assert tag_name == 'note'
     assert [ 'to', 'from', 'heading', 'body' ] == Enum.map(nested_tags, fn({tag_name, _, _}) -> tag_name end)
   end

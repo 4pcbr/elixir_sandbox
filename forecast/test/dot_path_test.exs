@@ -24,8 +24,13 @@ defmodule DotPathTest do
 
   test "root element" do
     { :ok, xml, _ } = :erlsom.simple_form(sample_data)
-    [{ tag_name, attrs, content }] = find(xml, "a")
+    [{ tag_name, _, _ }] = find(xml, "a")
     assert tag_name == 'a'
+  end
+
+  test "read attributes" do
+    { :ok, xml, _ } = :erlsom.simple_form(sample_data)
+    [{ _, attrs, _ }] = find(xml, "a")
     assert Enum.sort(attrs, &(elem(&1, 0) < elem(&2, 0))) == [{ 'k1', 'v1' }, { 'k2', 'v2' }]
   end
 
@@ -41,11 +46,10 @@ defmodule DotPathTest do
 
   test "more deep nesting" do
     { :ok, xml, _ } = :erlsom.simple_form(sample_data)
-    [{ tag_name, attrs, content }] = find(xml, "a.b.c.d")
+    [{ tag_name, _, content }] = find(xml, "a.b.c.d")
     assert tag_name == 'd'
     assert content == ['text.d']
   end
-
 
 end
 
