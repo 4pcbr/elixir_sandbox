@@ -25,17 +25,16 @@ defmodule Forecast.Formatter do
     "#{res}\n"
   end
 
-  def render(glyph, pos_x, pos_y, canvas) when is_binary(glyph) do
-    render(str_to_glyph(glyph), pos_x, pos_y, canvas)
+  def render(canvas, pos_x, pos_y, glyph) when is_binary(glyph) do
+    render(canvas, pos_x, pos_y, str_to_glyph(glyph))
   end
 
-  def render(glyph, pos_x, pos_y, canvas) do
-    stringify_glyph join_glyphs(glyph, pos_x, pos_y, canvas)
+  def render(canvas, pos_x, pos_y, glyph) do
+    stringify_glyph join_glyphs(canvas, pos_x, pos_y, glyph)
   end
 
-  def join_glyphs(glyph, pos_x, pos_y, canvas) do
-    Enum.slice(canvas, 0, pos_y) ++ _render(glyph, pos_x, 
-                                      Enum.drop(canvas, pos_y))
+  def join_glyphs(canvas, pos_x, pos_y, glyph) do
+    Enum.slice(canvas, 0, pos_y) ++ _render(Enum.drop(canvas, pos_y), pos_x, glyph)
   end
 
   def concat(glyph1, glyph2) when length(glyph1) == length(glyph2) do
@@ -44,25 +43,22 @@ defmodule Forecast.Formatter do
 
   def concat(glyph1, glyph2), do: raise "Glyphs should be the same y-size"
 
-  defp _concat([], []) do
-    []
-  end
-
+  defp _concat([], []), do: []
   defp _concat([line1 | rest1], [line2 | rest2]) do
     [ line1 ++ line2 ] ++ _concat(rest1, rest2)
   end
 
 
-  defp _render(_, _, []) do
+  defp _render([], _, _) do
     []
   end
 
-  defp _render([], offset, [line | rest]) do
-    [ line ] ++ _render([], offset, rest)
+  defp _render([line | rest], offset, []) do
+    [ line ] ++ _render(rest, offset, [])
   end
 
-  defp _render([glyph_line | glyph_rest], offset, [line | rest]) do
-    [ EnumExt.replace_mult(line, offset, glyph_line) ] ++ _render(glyph_rest, offset, rest)
+  defp _render([line | rest], offset, [glyph_line | glyph_rest]) do
+    [ EnumExt.replace_mult(line, offset, glyph_line) ] ++ _render(rest, offset, glyph_rest)
   end
 
 end

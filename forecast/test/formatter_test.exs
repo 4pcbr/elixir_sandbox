@@ -52,7 +52,7 @@ defmodule FormatterTest do
     """
     glyph = str_to_glyph(glyph_str)
     canvas = new_canvas(5, 6)
-    res = render(glyph, 1, 2, canvas)
+    res = render(canvas, 1, 2, glyph)
     assert res == expected_render
   end
 
