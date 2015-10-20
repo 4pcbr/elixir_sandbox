@@ -38,6 +38,8 @@ defmodule Forecast.Formatter do
   end
 
   def concat(glyph1, glyph2) when length(glyph1) == length(glyph2) do
+    IO.inspect glyph1
+    IO.inspect glyph2
     _concat(glyph1, glyph2)
   end
 

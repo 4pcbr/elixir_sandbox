@@ -14,16 +14,21 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     location    = Map.get(data, :location, unknown)
     temp_glyph  = temperature
                     |> String.split("")
-                    |> String.join(" ")
+                    |> Enum.join(" ")
                     |> String.split("")
                     |> Enum.map(&String.to_char_list/1)
                     |> _char_list_to_glyphs
-    result = join_glyphs(template, 40, 2, temp_glyph)
+    join_glyphs(template, 40, 3, temp_glyph)
+      |> join_glyphs( 56, 11, [ String.to_char_list( location ) ] )
+      |> join_glyphs( 13, 11, [ String.to_char_list( humidity ) ] )
+      |> join_glyphs( 9, 12,  [ String.to_char_list( wind ) ] )
   end
 
-  defp _char_list_to_glyphs([]), do: []
-  defp _char_list_to_glyphs([ch]), do: ch
+  #defp _char_list_to_glyphs([]), do: []
+  defp _char_list_to_glyphs(['']), do: []
+  defp _char_list_to_glyphs([ch]), do: glyph(ch)
   defp _char_list_to_glyphs([ch | rest]) do
+    IO.inspect glyph(ch)
     concat( glyph(ch), _char_list_to_glyphs(rest) )
   end
 
@@ -54,11 +59,11 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
 
   defp _glyph('1') do
     """
-      ##
-     ###
-    ####
-      ##
-      ##
+      ## 
+     ### 
+    #### 
+      ## 
+      ## 
      ####
     """
   end
@@ -67,9 +72,9 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
     .###.
     #  .#
-      .#
-    .#
-    #
+      .# 
+    .#   
+    #    
     #####
     """
   end
@@ -78,17 +83,17 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
     .###.
     *  .#
-      *#
+      *# 
         #
     *  .#
-     ###
+     ### 
     """
   end
 
   defp _glyph('4') do
     """
-      .#
-     .#
+      .# 
+     .#  
     .#  #
     #####
         #
@@ -99,22 +104,22 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
   defp _glyph('5') do
     """
     #####
-    #
+    #    
     ####.
         #
         #
-    ####
+    #### 
     """
   end
 
   defp _glyph('6') do
     """
     .###.
-    #
+    #    
     ####.
     #   #
     #   #
-     ###
+     ### 
     """
   end
 
@@ -122,10 +127,10 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
     #####
         #
-       #
-      #
-     #
-    #
+       # 
+      #  
+     #   
+    #    
     """
   end
 
@@ -136,7 +141,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     .###.
     #   #
     #   #
-     ###
+     ### 
     """
   end
 
@@ -147,7 +152,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
      ####
         #
     .   #
-     ###
+     ### 
     """
   end
 
@@ -158,31 +163,55 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     #   #
     #   #
     #   #
-     ###
+     ### 
     """
   end
 
   defp _glyph('+') do
     """
-
-
-      #
+         
+         
+      #  
     ##### 
-      #
-
+      #  
+         
     """
   end
 
   defp _glyph('-') do
     """
-
-
-    
+         
+         
+         
     ##### 
-    
-
+         
+         
     """
   end
+
+  defp _glyph('C') do
+    """
+    .###.
+    #   #
+    #    
+    #    
+    #   #
+     ### 
+    """
+  end
+
+  defp _glyph('F') do
+    """
+    #####
+    #    
+    #    
+    ###  
+    #    
+    #    
+    """
+  end
+
+
 
   defp _glyph(' ') do
     """
