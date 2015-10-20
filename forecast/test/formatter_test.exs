@@ -5,6 +5,7 @@ defmodule FormatterTest do
     new_canvas: 3,
     to_glyph: 1,
     render: 4,
+    stringify_glyph: 1,
   ]
 
   test "new canvas initialization" do
@@ -18,9 +19,9 @@ defmodule FormatterTest do
   test "new canvas initialization with background" do
     width = 10
     height = 15
-    background = "#"
+    background = '#'
     canvas = new_canvas(width, height, background)
-    assert List.first(canvas) == List.duplicate(background, width)
+    assert List.first(canvas) == List.duplicate(List.first(background), width)
   end
 
   test "to_glyph" do
@@ -40,10 +41,34 @@ defmodule FormatterTest do
     456
     789
     """
+    expected_render = """
+         
+         
+     123 
+     456 
+     789 
+         
+    """
     glyph = to_glyph(glyph_str)
     canvas = new_canvas(5, 6)
     render(glyph, 1, 2, canvas)
   end
+
+  test "stringify_glyph" do
+    str_glyph = """
+        ##  
+        ##  
+        ##  
+        ##  
+            
+        ##  
+        ##  
+            
+    """
+    glyph = to_glyph(str_glyph)
+    assert str_glyph == stringify_glyph(glyph)
+  end
+
 
 end
 
