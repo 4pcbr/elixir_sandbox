@@ -26,5 +26,12 @@ defmodule EnumExtTest do
     assert c == [1,2,3,9,8,7]
   end
 
+  test "replace_mult with no replacement length specified" do
+    a = [1,2,3,4,5]
+    b = [9,8,7]
+    c = replace_mult(a, 2, b)
+    assert c == [1,2,9,8,7]
+  end
+
 end
 

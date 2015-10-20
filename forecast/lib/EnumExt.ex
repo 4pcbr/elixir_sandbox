@@ -12,9 +12,12 @@ defmodule EnumExt do
     replace_mult(list, length(list) - 1 + start, to_replace, replacement)
   end
 
-
   def replace_mult(list, start..finish, replacement) do
     replace_mult(list, start, abs(finish - start) + 1, replacement)
+  end
+
+  def replace_mult(list, start, replacement) when is_integer(start) do
+    replace_mult(list, start, length(replacement), replacement)
   end
 
 end
