@@ -31,11 +31,14 @@ defmodule Forecast.Formatter do
   end
 
   def render(glyph, pos_x, pos_y, canvas) do
-    stringify_glyph(
-      Enum.slice(canvas, 0, pos_y) ++ _render(glyph, pos_x, 
-                                      Enum.drop(canvas, pos_y))
-    )
+    stringify_glyph join_glyphs(glyph, pos_x, pos_y, canvas)
   end
+
+  def join_glyphs(glyph, pos_x, pos_y, canvas) do
+    Enum.slice(canvas, 0, pos_y) ++ _render(glyph, pos_x, 
+                                      Enum.drop(canvas, pos_y))
+  end
+
 
   defp _render(_, _, []) do
     []
