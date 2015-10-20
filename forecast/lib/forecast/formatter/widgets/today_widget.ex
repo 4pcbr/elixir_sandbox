@@ -1,10 +1,10 @@
 defmodule Forecast.Formatter.Widgets.TodayWidget do
 
   def template do
-    """
+    Forecast.Formatter.to_glyph """
     ┌---------------------------------------------------------------------------┐
     |                                                                           |
-    |  SAT                                                   Partially Cloudy   |
+    |  XXX                                                   XXX                |
     |                                                                           |
     |                                                                           |
     |                                                                           |
@@ -13,13 +13,17 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     |                                                                           |
     |                                                                           |
     |                                                                           |
-    |  Humidity: 100%                                     Amsterdam             |
-    |  Wind: ↖ 8.05 km/h                                                        |
+    |  Humidity: XX                                       X                     |
+    |  Wind: XXX                                                                |
     ├---------------------------------------------------------------------------┤
     """
   end
 
-  def glyph('1') do
+  def glyph(gl) do
+    Forecast.Formatter.to_glyph(_glyph(gl))
+  end
+
+  defp _glyph('1') do
     """
       ##
      ###
@@ -30,7 +34,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('2') do
+  defp _glyph('2') do
     """
     .###.
     #  .#
@@ -41,7 +45,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('3') do
+  defp _glyph('3') do
     """
     .###.
     *  .#
@@ -52,7 +56,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('4') do
+  defp _glyph('4') do
     """
       .#
      .#
@@ -63,7 +67,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('5') do
+  defp _glyph('5') do
     """
     #####
     #
@@ -74,7 +78,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('6') do
+  defp _glyph('6') do
     """
     .###.
     #
@@ -85,7 +89,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('7') do
+  defp _glyph('7') do
     """
     #####
         #
@@ -96,7 +100,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('8') do
+  defp _glyph('8') do
     """
     .###.
     #   #
@@ -107,7 +111,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('9') do
+  defp _glyph('9') do
     """
     .###.
     #   #
@@ -118,7 +122,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('0') do
+  defp _glyph('0') do
     """
     .###.
     #   #
@@ -129,7 +133,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('+') do
+  defp _glyph('+') do
     """
 
 
@@ -140,7 +144,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph('-') do
+  defp _glyph('-') do
     """
 
 
@@ -151,7 +155,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  def glyph(' ') do
+  defp _glyph(' ') do
     """
       
       
@@ -162,8 +166,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-
-  def glyph(unknown) do
+  defp _glyph(unknown) do
     raise "Unknown glyph: #{unknown}"
   end
 
