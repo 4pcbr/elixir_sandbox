@@ -51,7 +51,8 @@ defmodule FormatterTest do
     """
     glyph = to_glyph(glyph_str)
     canvas = new_canvas(5, 6)
-    render(glyph, 1, 2, canvas)
+    res = render(glyph, 1, 2, canvas)
+    assert res == expected_render
   end
 
   test "stringify_glyph" do

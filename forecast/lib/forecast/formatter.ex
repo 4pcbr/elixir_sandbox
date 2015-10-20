@@ -31,24 +31,21 @@ defmodule Forecast.Formatter do
   end
 
   def render(glyph, pos_x, pos_y, canvas) do
-    glyph_height = length(glyph)
-    glyph_width = glyph
-                    |> List.first
-                    |> length
-    IO.puts "Glyph: width: #{glyph_width}, height: #{glyph_height}"
-    
-    Enum.slice(canvas, 0, pos_y) ++ _render(glyph, pos_x, glyph)
+    stringify_glyph(
+      Enum.slice(canvas, 0, pos_y) ++ _render(glyph, pos_x, 
+                                      Enum.drop(canvas, pos_y))
+    )
   end
 
-  defp _render([], _, _) do
+  defp _render(_, _, []) do
     []
   end
 
-  defp _render([], offset, [line, rest]) do
+  defp _render([], offset, [line | rest]) do
     [ line ] ++ _render([], offset, rest)
   end
 
-  defp _render([glyph_line|glyph_rest], offset, [line|rest]) do
+  defp _render([glyph_line | glyph_rest], offset, [line | rest]) do
     [ EnumExt.replace_mult(line, offset, glyph_line) ] ++ _render(glyph_rest, offset, rest)
   end
 
