@@ -14,23 +14,23 @@ defmodule TodayWidgetTest do
     expected_render = """
     ┌---------------------------------------------------------------------------┐
     |                                                                           |
-    |  Mostly cloudy                                  ##     .#       .###.     |
-    |                                                ###    .#        #   #     |
-    |                                          #    ####   .#  #      #         |
-    |                                        #####    ##   #####      #         |
-    |                                          #      ##       #      #   #     |
-    |                                                ####      #       ###      |
+    |  Mostly cloudy                                  ##     .#       O  .###.  |
+    |                                                ###    .#           #   #  |
+    |                                          #    ####   .#  #         #      |
+    |                                        #####    ##   #####         #      |
+    |                                          #      ##       #         #   #  |
+    |                                                ####      #          ###   |
     |                                                                           |
     |                                                                           |
     |                                                                           |
     |  Humidity: 95%                                        Amsterdam, NL       |
-    |  Wind: ↗15km/h                                                            |
+    |  Wind: ↗ 15km/h                                                           |
     ├---------------------------------------------------------------------------┤
     """
     render = render_data %{
-      temperature: "+14 C",
+      temperature: "+14 °C",
       humidity:    "95%",
-      wind:        "↗15km/h",
+      wind:        "↗ 15km/h",
       location:    "Amsterdam, NL",
       conditions:  "Mostly cloudy",
     }

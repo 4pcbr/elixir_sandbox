@@ -26,7 +26,6 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
       |> join_glyphs( 3, 2,   [ String.to_char_list( conditions ) ] )
   end
 
-  #defp _char_list_to_glyphs([]), do: []
   defp _char_list_to_glyphs(['']), do: []
   defp _char_list_to_glyphs([ch]), do: glyph(ch)
   defp _char_list_to_glyphs([ch | rest]) do
@@ -55,10 +54,10 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
   end
 
   def glyph(gl) do
-    str_to_glyph(_glyph(gl))
+    str_to_glyph(_str_glyph(gl))
   end
 
-  defp _glyph('1') do
+  defp _str_glyph('1') do
     """
       ## 
      ### 
@@ -69,7 +68,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('2') do
+  defp _str_glyph('2') do
     """
     .###.
     #  .#
@@ -80,7 +79,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('3') do
+  defp _str_glyph('3') do
     """
     .###.
     *  .#
@@ -91,7 +90,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('4') do
+  defp _str_glyph('4') do
     """
       .# 
      .#  
@@ -102,7 +101,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('5') do
+  defp _str_glyph('5') do
     """
     #####
     #    
@@ -113,7 +112,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('6') do
+  defp _str_glyph('6') do
     """
     .###.
     #    
@@ -124,7 +123,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('7') do
+  defp _str_glyph('7') do
     """
     #####
         #
@@ -135,7 +134,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('8') do
+  defp _str_glyph('8') do
     """
     .###.
     #   #
@@ -146,7 +145,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('9') do
+  defp _str_glyph('9') do
     """
     .###.
     #   #
@@ -157,7 +156,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('0') do
+  defp _str_glyph('0') do
     """
     .###.
     #   #
@@ -168,7 +167,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('+') do
+  defp _str_glyph('+') do
     """
          
          
@@ -179,7 +178,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('-') do
+  defp _str_glyph('-') do
     """
          
          
@@ -190,7 +189,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('C') do
+  defp _str_glyph('C') do
     """
     .###.
     #   #
@@ -201,7 +200,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph('F') do
+  defp _str_glyph('F') do
     """
     #####
     #    
@@ -214,7 +213,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
 
 
 
-  defp _glyph(' ') do
+  defp _str_glyph(' ') do
     """
       
       
@@ -225,7 +224,18 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
-  defp _glyph(unknown) do
+  defp _str_glyph('°') do
+    """
+    O
+     
+     
+     
+     
+     
+    """
+  end
+
+  defp _str_glyph(unknown) do
     raise "Unknown glyph: #{unknown}"
   end
 
