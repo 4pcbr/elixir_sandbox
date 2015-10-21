@@ -37,9 +37,10 @@ defmodule Forecast.Formatter do
     Enum.slice(canvas, 0, pos_y) ++ _render(Enum.drop(canvas, pos_y), pos_x, glyph)
   end
 
+  def concat(glyph, []), do: glyph
+  def concat([], glyph), do: glyph
+
   def concat(glyph1, glyph2) when length(glyph1) == length(glyph2) do
-    IO.inspect glyph1
-    IO.inspect glyph2
     _concat(glyph1, glyph2)
   end
 

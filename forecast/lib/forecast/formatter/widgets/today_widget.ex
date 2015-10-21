@@ -12,23 +12,24 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     humidity    = Map.get(data, :humidity, unknown)
     wind        = Map.get(data, :wind, unknown)
     location    = Map.get(data, :location, unknown)
+    conditions  = Map.get(data, :conditions, unknown)
     temp_glyph  = temperature
                     |> String.split("")
                     |> Enum.join(" ")
                     |> String.split("")
                     |> Enum.map(&String.to_char_list/1)
                     |> _char_list_to_glyphs
-    join_glyphs(template, 40, 3, temp_glyph)
+    join_glyphs(template, 41, 2, temp_glyph)
       |> join_glyphs( 56, 11, [ String.to_char_list( location ) ] )
       |> join_glyphs( 13, 11, [ String.to_char_list( humidity ) ] )
       |> join_glyphs( 9, 12,  [ String.to_char_list( wind ) ] )
+      |> join_glyphs( 3, 2,   [ String.to_char_list( conditions ) ] )
   end
 
   #defp _char_list_to_glyphs([]), do: []
   defp _char_list_to_glyphs(['']), do: []
   defp _char_list_to_glyphs([ch]), do: glyph(ch)
   defp _char_list_to_glyphs([ch | rest]) do
-    IO.inspect glyph(ch)
     concat( glyph(ch), _char_list_to_glyphs(rest) )
   end
 
@@ -38,7 +39,6 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     str_to_glyph """
     ┌---------------------------------------------------------------------------┐
     |                                                                           |
-    |  XXX                                   XXX                                |
     |                                                                           |
     |                                                                           |
     |                                                                           |
@@ -47,8 +47,9 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     |                                                                           |
     |                                                                           |
     |                                                                           |
-    |  Humidity: XX                                       X                     |
-    |  Wind: XXX                                                                |
+    |                                                                           |
+    |  Humidity:                                                                |
+    |  Wind:                                                                    |
     ├---------------------------------------------------------------------------┤
     """
   end
@@ -172,7 +173,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
          
          
       #  
-    ##### 
+    #####
       #  
          
     """
