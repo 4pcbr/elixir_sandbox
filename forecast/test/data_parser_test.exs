@@ -4,6 +4,7 @@ defmodule DataParserTest do
 
   import DataParser, only: [
     parse_response: 1,
+    step_func: 2,
   ]
 
   def sample_response do
@@ -69,13 +70,13 @@ defmodule DataParserTest do
   test "parse_response" do
     expected_res = %{
       #[{'title', [], ['Yahoo! Weather - Amsterdam, NL']},
-      title: 'Yahoo! Weather - Amsterdam, NL',
+      title: "Yahoo! Weather - Amsterdam, NL",
 
       #[{'temperature', 'C'}, {'speed', 'km/h'}, {'pressure', 'mb'},
-      units: [ temperature: "C",  speed: "km/h", pressure: "mb" ],
+      units: [ temperature: "C",  speed: "km/h", pressure: "mb", distance: "km" ],
 
       #{'wind', [{'speed', '20.92'}, {'direction', '200'}, {'chill', '11'}],
-      wind: "↖ 21km/h",
+      wind: "↓ 21km/h",
 
       #{'atmosphere',
       #     [{'visibility', '2.3'}, {'rising', '2'}, {'pressure', '982.05'},
@@ -120,6 +121,18 @@ defmodule DataParserTest do
 
     assert parse_response(sample_response()) == expected_res
   end
+
+  test "step_func" do
+    steps = [
+      0, 45, 90, 135, 180, 225, 270, 315, 360
+    ]
+
+    assert( step_func( steps, 0 ) == 0 )
+    assert( step_func( steps, 25 ) == 45 )
+    assert( step_func( steps, 46 ) == 90 )
+    
+  end
+
 
 
 end
