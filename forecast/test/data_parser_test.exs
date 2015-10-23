@@ -6,7 +6,7 @@ defmodule DataParserTest do
     parse_response: 1,
   ]
 
-  def test_response do
+  def sample_response do
     {'query',
      [{'lang', 'en-US'}, {'created', '2015-10-21T19:41:58Z'}, {'count', '1'}],
      [{'results', [],
@@ -117,6 +117,8 @@ defmodule DataParserTest do
         [ conditions: "AM Light Rain", day: "Sun", tmp_low: "7", tmp_hight: "12" ],
       ],
     }
+
+    assert parse_response(sample_response()) == expected_res
   end
 
 

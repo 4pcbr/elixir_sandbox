@@ -7,6 +7,12 @@ defmodule Forecast.DotPath do
         )
   end
 
+  def attrs_to_keywords(attrs_arr) do
+    attrs_arr |> Enum.map fn(el) ->
+      { List.to_atom(elem(el, 0)), elem(el, 1) }
+    end
+  end
+
   defp _find(_, []), do: []
   defp _find({ tag_name, attrs, children }, [lookup]) when tag_name == lookup do
     [{ tag_name, attrs, children }]
