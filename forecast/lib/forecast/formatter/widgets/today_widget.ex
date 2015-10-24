@@ -19,7 +19,7 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
                     |> String.split("")
                     |> Enum.map(&String.to_char_list/1)
                     |> _char_list_to_glyphs
-    join_glyphs(template, 41, 2, temp_glyph)
+    join_glyphs(template, 40, 2, temp_glyph)
       |> join_glyphs( 56, 11, [ String.to_char_list( location ) ] )
       |> join_glyphs( 13, 11, [ String.to_char_list( humidity ) ] )
       |> join_glyphs( 9, 12,  [ String.to_char_list( wind ) ] )
@@ -36,20 +36,20 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
 
   def template do
     str_to_glyph """
-    ┌---------------------------------------------------------------------------┐
-    |                                                                           |
-    |                                                                           |
-    |                                                                           |
-    |                                                                           |
-    |                                                                           |
-    |                                                                           |
-    |                                                                           |
-    |                                                                           |
-    |                                                                           |
-    |                                                                           |
-    |  Humidity:                                                                |
-    |  Wind:                                                                    |
-    ├---------------------------------------------------------------------------┤
+    ┌--------------------------------------------------------------------------┐
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |  Humidity:                                                               |
+    |  Wind:                                                                   |
+    ├--------------┬--------------┬--------------┬--------------┬--------------┤
     """
   end
 

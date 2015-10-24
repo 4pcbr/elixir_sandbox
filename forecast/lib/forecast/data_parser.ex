@@ -98,13 +98,11 @@ defmodule DataParser do
       |> List.first
   end
 
-
   defp _charlist_to_str_in_kw(kw) do
     kw |> Enum.map fn(tpl) ->
       { elem(tpl, 0), List.to_string(elem(tpl, 1)) }
     end
   end
-
 
 end
 
