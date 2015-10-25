@@ -1,9 +1,5 @@
 defmodule Forecast.Formatter do
 
-  def print_table_for_columns(data, headers) do
-    #XXX
-  end
-
   def new_canvas(width, height, background \\ ' ') when length(background) == 1 do
     List.duplicate(List.first(background), width)
       |> List.duplicate(height)
@@ -23,13 +19,13 @@ defmodule Forecast.Formatter do
     "#{res}\n"
   end
 
-  def render(canvas, pos_x, pos_y, glyph) when is_binary(glyph) do
-    render(canvas, pos_x, pos_y, str_to_glyph(glyph))
-  end
+  #def render(canvas, pos_x, pos_y, glyph) when is_binary(glyph) do
+  #  render(canvas, pos_x, pos_y, str_to_glyph(glyph))
+  #end
 
-  def render(canvas, pos_x, pos_y, glyph) do
-    stringify_glyph join_glyphs(canvas, pos_x, pos_y, glyph)
-  end
+  #def render(canvas, pos_x, pos_y, glyph) do
+  #  stringify_glyph join_glyphs(canvas, pos_x, pos_y, glyph)
+  #end
 
   def join_glyphs(canvas, pos_x, pos_y, glyph) do
     Enum.slice(canvas, 0, pos_y) ++ _render(Enum.drop(canvas, pos_y), pos_x, glyph)

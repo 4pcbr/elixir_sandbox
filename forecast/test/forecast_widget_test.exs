@@ -1,10 +1,9 @@
-defmodule WeekWidgetTest do
+defmodule ForecastWidgetTest do
 
   use ExUnit.Case
 
-  import Forecast.Formatter.Widgets.WeekWidget, only: [
+  import Forecast.Formatter.Widgets.ForecastWidget, only: [
     render_data: 1,
-    render_day_data: 2,
   ]
 
   import Forecast.Formatter, only: [
@@ -33,30 +32,23 @@ defmodule WeekWidgetTest do
     }
   end
 
-  def sample_week_data do
-    Map.get(sample_data, :week)
-  end
-
-  def sample_units do
-    [ temperature: "C",  speed: "km/h", pressure: "mb", distance: "km" ]
-  end
-
-
-  test "render_day_data" do
-    day_data = List.first(sample_week_data)
-    result = render_day_data(day_data, sample_units)
-    assert stringify_glyph(result) == """
-    21 Oct 2015   
-    Wed           
-    Cloudy        
-    ↑ 13 °C       
-    ↓ 11 °C       
-    """
-  end
-
   test "render_data" do
-    result = render_data(sample_data)
-    assert stringify_glyph(result) == """
+    res = render_data(sample_data)
+    assert stringify_glyph(res) == """
+    ┌--------------------------------------------------------------------------┐
+    |                                                                          |
+    |  Light Drizzle                                 ##     ##       O  .###.  |
+    |                                               ###    ###          #   #  |
+    |                                         #    ####   ####          #      |
+    |                                       #####    ##     ##          #      |
+    |                                         #      ##     ##          #   #  |
+    |                                               ####   ####          ###   |
+    |                                                                          |
+    |                                                                          |
+    |                                                                          |
+    |  Humidity: 100%                                       Amsterdam, NH      |
+    |  Wind: ↓ 21km/h                                                          |
+    ├--------------┬--------------┬--------------┬--------------┬--------------┤
     |21 Oct 2015   |22 Oct 2015   |23 Oct 2015   |24 Oct 2015   |25 Oct 2015   |
     |Wed           |Thu           |Fri           |Sat           |Sun           |
     |Cloudy        |AM Showers    |Mostly Sunny  |Mostly Cloudy |AM Light Rain |
@@ -65,7 +57,6 @@ defmodule WeekWidgetTest do
     └--------------┴--------------┴--------------┴--------------┴--------------┘
     """
   end
-
 
 end
 

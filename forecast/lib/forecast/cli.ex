@@ -1,7 +1,11 @@
 defmodule Forecast.CLI do
 
+  import Forecast.Formatter.Widgets.ForecastWidget, only: [
+    render_data: 1,
+  ]
+
   import Forecast.Formatter, only: [
-    print_table_for_columns: 2,
+    stringify_glyph: 1,
   ]
 
   def main(argv) do
@@ -24,7 +28,8 @@ defmodule Forecast.CLI do
   def process(location) do
     Forecast.Fetcher.fetch(location)
       |> decode_response
-      |> print_table_for_columns([])
+      |> render_data
+      |> stringify_glyph
   end
 
   def decode_response({ :error, reason }) do

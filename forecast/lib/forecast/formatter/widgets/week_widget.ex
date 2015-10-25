@@ -25,6 +25,13 @@ defmodule Forecast.Formatter.Widgets.WeekWidget do
     """
   end
 
+  def size do
+    {
+      template |> List.first |> length,
+      template |> length
+    }
+  end
+
   def render_data(data) when is_map(data) do
     units      = Map.get(data, :units, [])
     day_glyphs = Map.get(data, :week,  [])
@@ -40,7 +47,6 @@ defmodule Forecast.Formatter.Widgets.WeekWidget do
       end
   end
 
-  # [text: "Cloudy", low: "11", high: "13", day: "Wed", date: "21 Oct 2015", code: "26"]
   def render_day_data(day_data, units) do
     %{
       text: text,

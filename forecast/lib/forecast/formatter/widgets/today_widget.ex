@@ -53,6 +53,13 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
     """
   end
 
+  def size do
+    {
+      template |> List.first |> length,
+      template |> length
+    }
+  end
+
   def glyph(gl) do
     str_to_glyph(_str_glyph(gl))
   end

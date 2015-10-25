@@ -4,7 +4,6 @@ defmodule FormatterTest do
     new_canvas: 2,
     new_canvas: 3,
     str_to_glyph: 1,
-    render: 4,
     stringify_glyph: 1,
     concat: 2,
   ]
@@ -34,26 +33,6 @@ defmodule FormatterTest do
     glyph = str_to_glyph(str_glyph)
     assert length(glyph) == 3
     assert List.first(glyph) == '!@#'
-  end
-
-  test "render" do
-    glyph_str = """
-    123
-    456
-    789
-    """
-    expected_render = """
-         
-         
-     123 
-     456 
-     789 
-         
-    """
-    glyph = str_to_glyph(glyph_str)
-    canvas = new_canvas(5, 6)
-    res = render(canvas, 1, 2, glyph)
-    assert res == expected_render
   end
 
   test "stringify_glyph" do
