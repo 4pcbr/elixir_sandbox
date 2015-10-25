@@ -2,7 +2,7 @@ defmodule DataParserTest do
 
   use ExUnit.Case
 
-  import DataParser, only: [
+  import Forecast.DataParser, only: [
     parse_response: 1,
     step_func: 2,
   ]
@@ -95,27 +95,12 @@ defmodule DataParserTest do
       #[{'region', 'NH'}, {'country', 'Netherlands'}, {'city', 'Amsterdam'}],
       location: "Amsterdam, NH",
 
-      #      {'forecast',
-      #       [{'text', 'Cloudy'}, {'low', '11'}, {'high', '13'}, {'day', 'Wed'},
-      #        {'date', '21 Oct 2015'}, {'code', '26'}], []},
-      #      {'forecast',
-      #       [{'text', 'AM Showers'}, {'low', '9'}, {'high', '14'}, {'day', 'Thu'},
-      #        {'date', '22 Oct 2015'}, {'code', '39'}], []},
-      #      {'forecast',
-      #       [{'text', 'Mostly Sunny'}, {'low', '8'}, {'high', '14'},
-      #        {'day', 'Fri'}, {'date', '23 Oct 2015'}, {'code', '34'}], []},
-      #      {'forecast',
-      #       [{'text', 'Mostly Cloudy'}, {'low', '10'}, {'high', '13'},
-      #        {'day', 'Sat'}, {'date', '24 Oct 2015'}, {'code', '28'}], []},
-      #      {'forecast',
-      #       [{'text', 'AM Light Rain'}, {'low', '7'}, {'high', '12'},
-      #        {'day', 'Sun'}, {'date', '25 Oct 2015'}, {'code', '11'}], []},
       week: [
-        [ conditions: "Cloudy", day: "Wed", tmp_low: "11", tmp_hight: "13" ],
-        [ conditions: "AM Showers", day: "Thu", tmp_low: "9", tmp_hight: "14" ],
-        [ conditions: "Mostly Sunny", day: "Fri", tmp_low: "8", tmp_hight: "14" ],
-        [ conditions: "Mostly Cloudy", day: "Sat", tmp_low: "10", tmp_hight: "13" ],
-        [ conditions: "AM Light Rain", day: "Sun", tmp_low: "7", tmp_hight: "12" ],
+        [ text: "Cloudy",        day: "Wed", low: "11", high: "13", date: "21 Oct 2015" ],
+        [ text: "AM Showers",    day: "Thu", low: "9",  high: "14", date: "22 Oct 2015" ],
+        [ text: "Mostly Sunny",  day: "Fri", low: "8",  high: "14", date: "23 Oct 2015" ],
+        [ text: "Mostly Cloudy", day: "Sat", low: "10", high: "13", date: "24 Oct 2015" ],
+        [ text: "AM Light Rain", day: "Sun", low: "7",  high: "12", date: "25 Oct 2015" ],
       ],
     }
 

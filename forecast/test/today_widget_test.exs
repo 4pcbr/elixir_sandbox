@@ -37,7 +37,5 @@ defmodule TodayWidgetTest do
     assert stringify_glyph(render) == expected_render
   end
 
-
-
 end
 

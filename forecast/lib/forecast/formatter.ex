@@ -11,10 +11,8 @@ defmodule Forecast.Formatter do
 
   def str_to_glyph(str_glyph) when is_binary(str_glyph) do
     str_glyph
+      |> String.strip(10) # the newline char
       |> String.split("\n")
-      |> Enum.reverse
-      |> List.delete_at(0)
-      |> Enum.reverse
       |> Enum.map(&(String.to_char_list(&1)))
   end
 

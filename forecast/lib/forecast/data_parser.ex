@@ -1,4 +1,4 @@
-defmodule DataParser do
+defmodule Forecast.DataParser do
 
   import Forecast.DotPath, only: [
     find: 2,
@@ -16,18 +16,18 @@ defmodule DataParser do
     result = Map.put(result, :title, List.to_string(title))
 
     [ location_tag ] = find(channel_tag, "channel.location")
-    location_attrs = elem(location_tag, 1) |> attrs_to_keywords |> _charlist_to_str_in_kw
+    location_attrs = elem(location_tag, 1) |> attrs_to_keywords |> charlist_to_str_in_kw
                       
     region = location_attrs |> Keyword.get(:region)
     city   = location_attrs |> Keyword.get(:city)
     result = Map.put(result, :location, "#{city}, #{region}")
 
     [ units_tag ] = find(channel_tag, "channel.units")
-    units = elem(units_tag, 1) |> attrs_to_keywords |> _charlist_to_str_in_kw
+    units = elem(units_tag, 1) |> attrs_to_keywords |> charlist_to_str_in_kw
     result = Map.put(result, :units, units)
 
     [ astronomy_tag ] = find(channel_tag, "channel.astronomy")
-    astronomy = elem(astronomy_tag, 1) |> attrs_to_keywords |> _charlist_to_str_in_kw
+    astronomy = elem(astronomy_tag, 1) |> attrs_to_keywords |> charlist_to_str_in_kw
     result = Map.put(result, :astronomy, astronomy)
 
     [ condition_tag ] = find(channel_tag, "channel.item.condition")
@@ -54,10 +54,11 @@ defmodule DataParser do
                   |> Enum.map fn (el) ->
                     day = elem(el, 1) |> attrs_to_keywords
                     [
-                      conditions: Keyword.get(day, :text) |> List.to_string,
-                      day:        Keyword.get(day, :day)  |> List.to_string,
-                      tmp_low:    Keyword.get(day, :low)  |> List.to_string,
-                      tmp_hight:  Keyword.get(day, :high) |> List.to_string,
+                      text: Keyword.get(day, :text) |> List.to_string,
+                      day:  Keyword.get(day, :day)  |> List.to_string,
+                      low:  Keyword.get(day, :low)  |> List.to_string,
+                      high: Keyword.get(day, :high) |> List.to_string,
+                      date: Keyword.get(day, :date) |> List.to_string,
                     ]
                   end
 
@@ -98,7 +99,7 @@ defmodule DataParser do
       |> List.first
   end
 
-  defp _charlist_to_str_in_kw(kw) do
+  def charlist_to_str_in_kw(kw) do
     kw |> Enum.map fn(tpl) ->
       { elem(tpl, 0), List.to_string(elem(tpl, 1)) }
     end
