@@ -4,6 +4,10 @@ defmodule Forecast.CLI do
     render_data: 1,
   ]
 
+  import Forecast.DataParser, only: [
+    parse_response: 1,
+  ]
+
   import Forecast.Formatter, only: [
     stringify_glyph: 1,
   ]
@@ -14,9 +18,19 @@ defmodule Forecast.CLI do
       |> process
   end
 
-  def parse_args(args) do
-
+  def parse_args( argv ) do
+    parse = OptionParser.parse(
+      argv,
+      switches: [ help: :boolean ],
+      aliases: [ :h, :help ]
+    )
+    case parse do
+      { [ help: true ], _, _ } -> :help
+      { _, [ location ], _ } -> { location }
+      _ -> :help
+    end
   end
+    
 
   def process(:help) do
     IO.puts """
@@ -30,13 +44,14 @@ defmodule Forecast.CLI do
       |> decode_response
       |> render_data
       |> stringify_glyph
+      |> IO.puts
   end
 
   def decode_response({ :error, reason }) do
     IO.puts "Error fetching the forecast feed: #{reason}"
     System.halt(2)
   end
-  def decode_response({ :ok, body }), do: body
+  def decode_response({ :ok, body }), do: parse_response(body)
 
 end
 

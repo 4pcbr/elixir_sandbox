@@ -38,7 +38,7 @@ defmodule Forecast.Formatter do
     _concat(glyph1, glyph2)
   end
 
-  def concat(glyph1, glyph2), do: raise "Glyphs should be the same y-size"
+  def concat(_glyph1, _glyph2), do: raise "Glyphs should be the same y-size"
 
   defp _concat([], []), do: []
   defp _concat([line1 | rest1], [line2 | rest2]) do

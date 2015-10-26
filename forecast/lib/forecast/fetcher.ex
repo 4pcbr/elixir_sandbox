@@ -29,7 +29,7 @@ defmodule Forecast.Fetcher do
     { :ok, parsed_body }
   end
 
-  def handle_response({ :ok, %HTTPoison.Response{ status_code: 404, body: body } }) do
+  def handle_response({ :ok, %HTTPoison.Response{ status_code: 404, body: _body } }) do
     Logger.error "The URL returned not found"
     { :error, "not found" }
   end

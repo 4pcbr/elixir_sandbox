@@ -25,14 +25,13 @@ defmodule Forecast.Formatter.Widgets.TodayWidget do
       |> join_glyphs( 9, 12,  [ String.to_char_list( wind ) ] )
       |> join_glyphs( 3, 2,   [ String.to_char_list( conditions ) ] )
   end
+  def render_data(_), do: raise "The argument should be a map"
 
   defp _char_list_to_glyphs(['']), do: []
   defp _char_list_to_glyphs([ch]), do: glyph(ch)
   defp _char_list_to_glyphs([ch | rest]) do
     concat( glyph(ch), _char_list_to_glyphs(rest) )
   end
-
-  def render_data(_), do: raise "The argument should be a map"
 
   def template do
     str_to_glyph """

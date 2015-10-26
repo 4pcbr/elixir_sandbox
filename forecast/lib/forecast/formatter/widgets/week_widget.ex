@@ -7,10 +7,6 @@ defmodule Forecast.Formatter.Widgets.WeekWidget do
     new_canvas: 2,
   ]
 
-  import Forecast.DataParser, only: [
-    charlist_to_str_in_kw: 1,
-  ]
-
   @x_offset 1
   @x_step   15
 
@@ -43,9 +39,10 @@ defmodule Forecast.Formatter.Widgets.WeekWidget do
     day_glyphs
       |> Stream.with_index
       |> Enum.reduce template, fn({ glyph, ix }, result) ->
-        result = join_glyphs(result, x_offset + ix * x_step, 0, glyph)
+        join_glyphs(result, x_offset + ix * x_step, 0, glyph)
       end
   end
+  def render_data(_), do: raise "The argument should be a map"
 
   def render_day_data(day_data, units) do
     %{
@@ -65,9 +62,6 @@ defmodule Forecast.Formatter.Widgets.WeekWidget do
       |> join_glyphs(0, 3, str_to_glyph("↑ #{high} °#{temperature}"))
       |> join_glyphs(0, 4, str_to_glyph("↓ #{low} °#{temperature}"))
   end
-
-  def render_data(_), do: raise "The argument should be a map"
-
 
 end
 

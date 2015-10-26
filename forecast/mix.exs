@@ -8,6 +8,7 @@ defmodule Forecast.Mixfile do
       elixir: "~> 1.1",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
+      escript: escript_config,
       name: "Forecast",
       deps: deps
     ]
@@ -38,4 +39,9 @@ defmodule Forecast.Mixfile do
       { :erlsom,    github: "willemdj/erlsom" },
     ]
   end
+
+  def escript_config do
+    [ main_module: Forecast.CLI ]
+  end
+
 end
