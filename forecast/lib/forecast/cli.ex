@@ -26,7 +26,7 @@ defmodule Forecast.CLI do
     )
     case parse do
       { [ help: true ], _, _ } -> :help
-      { _, [ location ], _ } -> { location }
+      { _, [ location ], _ } -> location
       _ -> :help
     end
   end
