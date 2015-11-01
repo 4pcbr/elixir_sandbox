@@ -23,7 +23,6 @@ defmodule FileReader do
   end
 
   defp count_words_in_file(file, word) do
-    # IO.inspect File.read(file)
     case File.read(file) do
       { :ok, bin_data } -> String.split(bin_data, word) |> length |> -1
       { :error, _reason } -> exit :error
@@ -59,11 +58,10 @@ end
 
 dir = "/Users/olegs/workspace/perl/Dancer/lib/Dancer"
 to_calculate = File.ls!(dir)
-                |> Enum.map &("#{dir}/#{&1}")
+                |> Enum.map(&("#{dir}/#{&1}"))
                 |> ExtEnum.grep fn(f) -> File.stat!(f).type == :regular end
 
-IO.inspect to_calculate
-lookup = "end"
+lookup = "package"
 
 Enum.each 1..10, fn(num_processes) ->
   { time, result } = :timer.tc(
