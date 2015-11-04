@@ -25,10 +25,6 @@ defmodule Ticker do
           client = Enum.at(clients, rem(turn, len))
           send client, { :tick, turn }
         end
-
-        # Enum.each clients, fn client ->
-        #    send client, { :tick }
-        #end
         generator(clients, turn + 1)
     end
   end
