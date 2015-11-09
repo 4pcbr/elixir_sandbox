@@ -11,10 +11,7 @@ defmodule MurmurHash.MurmurHash3_32 do
   def _bxor_with_self_rshift( val, rshift ), do: bxor( val, val >>> rshift )
 
   def _proc_block( hash, << b1, b2, b3, b4, tail :: binary >> ) do
-    k1 =  ( b1 )        |||
-          ( b2 <<< 8 )  |||
-          ( b3 <<< 16 ) |||
-          ( b4 <<< 24 )
+    k1 = :binary.decode_unsigned(<< b1, b2, b3, b4 >>, :little)
     hash = hash
       |> bxor( _mmix_32( k1 ) )
       |> _rotl_32( 13 )
