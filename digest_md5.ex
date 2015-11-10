@@ -32,8 +32,9 @@ defmodule Digest.MD5 do
   @d0 0x10325476
 
 
-  defp _bin_of_length( 0, _ ), do: <<>>
-  defp _bin_of_length( n, element \\ 0 ) do
+  defp _bin_of_length( n ), do: _bin_of_length( n, 0 )
+  defp _bin_of_length( 0, _element ), do: <<>>
+  defp _bin_of_length( n, element ) do
     << element >> <> _bin_of_length( n - 1, element )
   end
 
@@ -60,8 +61,9 @@ defmodule Digest.MD5 do
   end
 
 
+  defp _chunk_bin( bin, size ), do: _chunk_bin( bin, size, 0 )
   defp _chunk_bin( bin, _, offset ) when offset >= byte_size( bin ), do: []
-  defp _chunk_bin( bin, size, offset \\ 0 ) do
+  defp _chunk_bin( bin, size, offset ) do
     [ :binary.part( bin, { offset, size } ) | _chunk_bin( bin, size, offset + size ) ]
   end
 
@@ -92,35 +94,43 @@ defmodule Digest.MD5 do
   end
 
 
+  defp _chunk_loop( _, a, b, c, d, -1 ), do: { a, b, c, d }
+  defp _chunk_loop( words, a, b, c, d, ix ) do
+    { f, g } = _md5( a, b, c, d, ix )
+    { d, c, b, a } = {
+      c,
+      b,
+      b + _rotl_32( a + f + elem( @k, ix ) +
+        :binary.decode_unsigned(
+          Enum.at( words, g ),
+          :little
+        ) &&& @mask_32,
+        elem( @s, ix )
+      ), 
+      d
+    }
+    _chunk_loop( words, a, b, c, d, ix - 1 )
+  end
+
+
+  defp _main_loop( message, offset, _len, a, b, c, d ) when offset >= byte_size( message ) do
+    { a, b, c, d }
+  end
+  defp _main_loop( message, offset, len, a, b, c, d ) do
+    chunk = :binary.part( message, { offset, len } )
+    words = _chunk_bin( chunk, 32 )
+    { a, b, c, d } = _chunk_loop( words, a, b, c, d, 64 - 1 )
+    _main_loop( message, offset + len, len, a, b, c, d )
+  end
+
+
   def hash( message ) do
-    message = message <> << 1 >>
-      |> _pad
-    _chunk_bin( message, 512 )
-      |> Enum.each fn( chunk ) ->
-        words = _chunk_bin( chunk, 32 )
-        { a, b, c, d } = { @a0, @b0, @c0, @d0 }
-        0..63
-          |> Enum.each fn( ix ) ->
-            { f, g } = _md5( a, b, c, d, ix )
-            { d, c, b, a } = {
-              c,
-              b,
-              b + _rotl_32( a + f + elem( @k, ix ) +
-                :binary.decode_unsigned(
-                  Enum.at( words, g ),
-                  :little
-                ),
-                elem( @s, ix )
-              ), 
-              d
-            }
-          end
-        { @a0, @b0, @c0, @d0 } = { a, b, c, d }
-      end
-    :binary.encode_unsigned( @a0, :little ) <>
-    :binary.encode_unsigned( @b0, :little ) <>
-    :binary.encode_unsigned( @c0, :little ) <>
-    :binary.encode_unsigned( @d0, :little )
+    message = message <> << 1 >> |> _pad
+    { a, b, c, d } = _main_loop( message, 0, 512, @a0, @b0, @c0, @d0 )
+    :binary.encode_unsigned( a, :little ) <>
+    :binary.encode_unsigned( b, :little ) <>
+    :binary.encode_unsigned( c, :little ) <>
+    :binary.encode_unsigned( d, :little )
   end
 
 end
