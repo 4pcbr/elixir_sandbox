@@ -45,7 +45,7 @@ defmodule Digest.MD5 do
   defp _bump_bin_size( bin, size ) when byte_size( bin ) >= size, do: bin
 
 
-  defp _rotl_32( m, n ), do: (( m <<< n ) ||| ( m >>> ( 32 - n ) )) &&& @mask_32
+  defp _rotl_32( m, n ), do: (( ( m &&& @mask_32 ) <<< n ) ||| ( ( m &&& @mask_32 ) >>> ( 32 - n ) ))
 
 
   defp _pad( message ) when rem( byte_size( message ), 512 ) < 448 do
@@ -101,11 +101,11 @@ defmodule Digest.MD5 do
     { d, c, b, a } = {
       c,
       b,
-      (b + _rotl_32( a + f + elem( @k, ix ) +
+      (b + _rotl_32( (a + f + elem( @k, ix ) +
         :binary.decode_unsigned(
           Enum.at( words, g ),
           :little
-        ),
+        )) &&& @mask_32,
         elem( @s, ix )
       )) &&& @mask_32, 
       d
