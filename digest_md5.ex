@@ -1,5 +1,7 @@
 defmodule Digest.MD5 do
 
+  use Bitwise
+
   @mask_32 0xFFFFFFFF
 
   @s { 7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
@@ -30,33 +32,96 @@ defmodule Digest.MD5 do
   @d0 0x10325476
 
 
-  defp rotl_32( m, n ), do: (( m <<< n ) ||| ( m >>> ( 32 - n ) )) &&& @mask_32
+  defp _bin_of_length( 0, _ ), do: <<>>
+  defp _bin_of_length( n, element \\ 0 ) do
+    << element >> <> _bin_of_length( n - 1, element )
+  end
 
-  defp pad( message ) when rem( byte_size( message ), 512 ) < 448 do
+
+  defp _bump_bin_size( bin, size ) when byte_size( bin ) < size do
+    _bump_bin_size( << 0 >> <> bin, size )
+  end
+  defp _bump_bin_size( bin, size ) when byte_size( bin ) >= size, do: bin
+
+
+  defp _rotl_32( m, n ), do: (( m <<< n ) ||| ( m >>> ( 32 - n ) )) &&& @mask_32
+
+
+  defp _pad( message ) when rem( byte_size( message ), 512 ) < 448 do
     original_length = byte_size( message ) - 1
-    IO.inspect byte_size( message )
-    tail = 0..( 448 - rem( byte_size( message ), 512 ) - 1 )
-            |> Enum.reduce( <<>>, fn( _, acc ) -> acc <> << 0 >> end )
-    message = message <> tail
-    # message <> 
-    #TODO
+    tail = 448 - rem( byte_size( message ), 512 )
+            |> _bin_of_length
+    message <> tail <> _bump_bin_size( :binary.encode_unsigned( original_length, :little ), 64 )
+  end
+  defp _pad( message ) do
+    tail = 448 + 512 - rem( byte_size( message ), 512 )
+            |> _bin_of_length
+    _pad( message <> tail )
   end
 
-  defp pad( message ) do
-    tail = 0..( 448 + 512 - rem( byte_size( message ), 512 ) )
-            |> Enum.reduce( <<>>, fn( _, acc ) -> acc <> << 0 >> end )
-    IO.inspect tail
-    pad( message <> tail )
+
+  defp _chunk_bin( bin, _, offset ) when offset >= byte_size( bin ), do: []
+  defp _chunk_bin( bin, size, offset \\ 0 ) do
+    [ :binary.part( bin, { offset, size } ) | _chunk_bin( bin, size, offset + size ) ]
   end
 
+
+  defp _md5( _a, b, c, d, ix ) when ix >= 0 and ix <= 15 do
+    {
+      ( b &&& c ) ||| ( bnot( b ) &&& d ),
+      ix
+    }
+  end
+  defp _md5( _a, b, c, d, ix ) when ix >= 16 and ix <= 31 do
+    {
+      ( d &&& b ) ||| ( bnot( d ) &&& c ),
+      rem( 5 * ix + 1, 16 )
+    }
+  end
+  defp _md5( _a, b, c, d, ix ) when ix >= 32 and ix <= 47 do
+    {
+      bxor( b, bxor( c, d ) ),
+      rem( 3 * ix + 5, 16 )
+    }
+  end
+  defp _md5( _a, b, c, d, ix ) when ix >= 48 and ix <= 63 do
+    {
+      bxor( c, b ||| bnot( d ) ),
+      rem( 7 * ix, 16 )
+    }
+  end
 
 
   def hash( message ) do
     message = message <> << 1 >>
-      |> pad
-    
+      |> _pad
+    _chunk_bin( message, 512 )
+      |> Enum.each fn( chunk ) ->
+        words = _chunk_bin( chunk, 32 )
+        { a, b, c, d } = { @a0, @b0, @c0, @d0 }
+        0..63
+          |> Enum.each fn( ix ) ->
+            { f, g } = _md5( a, b, c, d, ix )
+            { d, c, b, a } = {
+              c,
+              b,
+              b + _rotl_32( a + f + elem( @k, ix ) +
+                :binary.decode_unsigned(
+                  Enum.at( words, g ),
+                  :little
+                ),
+                elem( @s, ix )
+              ), 
+              d
+            }
+          end
+        { @a0, @b0, @c0, @d0 } = { a, b, c, d }
+      end
+    :binary.encode_unsigned( @a0, :little ) <>
+    :binary.encode_unsigned( @b0, :little ) <>
+    :binary.encode_unsigned( @c0, :little ) <>
+    :binary.encode_unsigned( @d0, :little )
   end
-
 
 end
 
