@@ -70,25 +70,25 @@ defmodule Digest.MD5 do
 
   defp _md5( _a, b, c, d, ix ) when ix >= 0 and ix <= 15 do
     {
-      ( b &&& c ) ||| ( bnot( b ) &&& d ),
+      ( ( b &&& c ) ||| ( bnot( b ) &&& d ) ) &&& @mask_32,
       ix
     }
   end
   defp _md5( _a, b, c, d, ix ) when ix >= 16 and ix <= 31 do
     {
-      ( d &&& b ) ||| ( bnot( d ) &&& c ),
+      ( ( d &&& b ) ||| ( bnot( d ) &&& c ) ) &&& @mask_32,
       rem( 5 * ix + 1, 16 )
     }
   end
   defp _md5( _a, b, c, d, ix ) when ix >= 32 and ix <= 47 do
     {
-      bxor( b, bxor( c, d ) ),
+      ( bxor( b, bxor( c, d ) ) ) &&& @mask_32,
       rem( 3 * ix + 5, 16 )
     }
   end
   defp _md5( _a, b, c, d, ix ) when ix >= 48 and ix <= 63 do
     {
-      bxor( c, b ||| bnot( d ) ),
+      ( bxor( c, b ||| bnot( d ) ) ) &&& @mask_32,
       rem( 7 * ix, 16 )
     }
   end
@@ -97,16 +97,17 @@ defmodule Digest.MD5 do
   defp _chunk_loop( _, a, b, c, d, -1 ), do: { a, b, c, d }
   defp _chunk_loop( words, a, b, c, d, ix ) do
     { f, g } = _md5( a, b, c, d, ix )
+    IO.puts "f: #{f}, g: #{g}"
     { d, c, b, a } = {
       c,
       b,
-      b + _rotl_32( a + f + elem( @k, ix ) +
+      (b + _rotl_32( a + f + elem( @k, ix ) +
         :binary.decode_unsigned(
           Enum.at( words, g ),
           :little
-        ) &&& @mask_32,
+        ),
         elem( @s, ix )
-      ), 
+      )) &&& @mask_32, 
       d
     }
     _chunk_loop( words, a, b, c, d, ix - 1 )
@@ -120,6 +121,7 @@ defmodule Digest.MD5 do
     chunk = :binary.part( message, { offset, len } )
     words = _chunk_bin( chunk, 32 )
     { a, b, c, d } = _chunk_loop( words, a, b, c, d, 64 - 1 )
+    IO.inspect :binary.encode_unsigned( a, :little )
     _main_loop( message, offset + len, len, a, b, c, d )
   end
 
@@ -127,11 +129,26 @@ defmodule Digest.MD5 do
   def hash( message ) do
     message = message <> << 1 >> |> _pad
     { a, b, c, d } = _main_loop( message, 0, 512, @a0, @b0, @c0, @d0 )
+    IO.inspect :binary.encode_unsigned( a, :little )
     :binary.encode_unsigned( a, :little ) <>
-    :binary.encode_unsigned( b, :little ) <>
-    :binary.encode_unsigned( c, :little ) <>
-    :binary.encode_unsigned( d, :little )
+      :binary.encode_unsigned( b, :little ) <>
+        :binary.encode_unsigned( c, :little ) <>
+          :binary.encode_unsigned( d, :little )
   end
+
+  def test( msg ) do
+    core = :erlang.md5( msg )
+    mine = Digest.MD5.hash( msg )
+    IO.inspect core
+    IO.inspect mine
+    if core == mine do
+      { :ok }
+    else
+      { :not_ok }
+    end
+  end
+
 
 end
 
+IO.inspect Digest.MD5.test("a")
