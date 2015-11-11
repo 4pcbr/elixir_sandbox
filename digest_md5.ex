@@ -40,7 +40,7 @@ defmodule Digest.MD5 do
 
 
   defp _bump_bin_size( bin, size ) when byte_size( bin ) < size do
-    _bump_bin_size( << 0 >> <> bin, size )
+    _bump_bin_size( bin <> << 0 >>, size )
   end
   defp _bump_bin_size( bin, size ) when byte_size( bin ) >= size, do: bin
 
@@ -49,24 +49,22 @@ defmodule Digest.MD5 do
 
 
   defp _pad( message ) do
-    msg_bit_size = bit_size( message )
-    message = message <> << 1 >>
-    len = byte_size( message )
-    len_rem = rem( len, 512 )
-    if len > 448 do
-      tail_len = 448 + 512 - len_rem
-    else
-      tail_len = 448 - len_rem
+    msg_len = bit_size( message )
+    left_over = ( msg_len >>> 3 ) &&& 0x3f
+    pad_len = case left_over do
+      val when val <  56 -> 56 - left_over
+      val when val >= 56 -> 120 - left_over
     end
-
-    tail = _bin_of_length( tail_len, 0 )
-    message <> tail <> _bump_bin_size( :binary.encode_unsigned( msg_bit_size &&& 0xFFFFFFFFFFFFFFFF, :little ), 64 )
-      |> _report
+    IO.puts pad_len
+    message = message <> << 0x80 >> <> _bin_of_length( pad_len - 1, 0 )
+    message = message <> _bump_bin_size( :binary.encode_unsigned( msg_len, :little ), 8 )
+    message |> _report
   end
 
-  defp _report( msg ) do
-    IO.inspect( :binary.bin_to_list( msg ), limit: :infinity )
-    msg
+
+  defp _report( val ) do
+    IO.inspect( val, limit: :infinity )
+    val
   end
 
 
@@ -106,7 +104,6 @@ defmodule Digest.MD5 do
   defp _chunk_loop( _, a, b, c, d, -1 ), do: { a, b, c, d }
   defp _chunk_loop( words, a, b, c, d, ix ) do
     { f, g } = _md5( a, b, c, d, ix )
-    # IO.puts "f: #{f}, g: #{g}"
     { d, c, b, a } = {
       c,
       b,
@@ -127,20 +124,30 @@ defmodule Digest.MD5 do
     { a, b, c, d }
   end
   defp _main_loop( message, offset, len, a, b, c, d ) do
+    { a0, b0, c0, d0 } = { a, b, c, d }
+    IO.inspect { a, b, c, d }
     { a, b, c, d } = message
                       |> :binary.part( { offset, len } )
-                      |> _chunk_bin( 32 )
+                      |> _chunk_bin( 4 )
+                      |> _report
                       |> _chunk_loop( a, b, c, d, 64 - 1 )
-    IO.inspect :binary.encode_unsigned( a, :little )
-    _main_loop( message, offset + len, len, a, b, c, d )
+    _main_loop(
+      message,
+      offset + len,
+      len,
+      ( a + a0 ) &&& @mask_32,
+      ( b + b0 ) &&& @mask_32,
+      ( c + c0 ) &&& @mask_32,
+      ( d + d0 ) &&& @mask_32
+    )
   end
 
 
   def hash( message ) do
     { a, b, c, d } = message
                       |> _pad
-                      |> _main_loop( 0, 512, @a0, @b0, @c0, @d0 )
-
+                      |> _main_loop( 0, 64, @a0, @b0, @c0, @d0 )
+    IO.puts "a: #{a}, b: #{b}, c: #{c}, d: #{d}"
     IO.inspect :binary.encode_unsigned( a, :little )
 
     :binary.encode_unsigned( a, :little ) <>
