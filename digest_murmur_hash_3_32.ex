@@ -1,4 +1,4 @@
-defmodule MurmurHash.MurmurHash3_32 do
+defmodule Digest.MurmurHash3_32 do
 
   use Bitwise
 
