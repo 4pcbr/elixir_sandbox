@@ -206,3 +206,38 @@ defmodule Digest.MD5 do
   end
 
 end
+
+defmodule Digest.MD5.Test do
+
+  def test do
+    messages = 1..4096 |> Enum.to_list |> Enum.map &:crypto.strong_rand_bytes/1
+    IO.puts "Starting the test suite."
+    { mega_s1, s1, micro_s1 } = test_core( messages, :erlang.timestamp )
+    IO.puts "The core function timestamp: #{mega_s1}:#{s1}:#{micro_s1}"
+    { mega_s2, s2, micro_s2 } = test_myself( messages, :erlang.timestamp )
+    IO.puts "My function timestamp: #{mega_s2}:#{s2}:#{micro_s2}"
+    diff = ( micro_s2 + s2 * 1_000_000 + mega_s2 * 1_000_000_000_000 ) / ( micro_s1 + s1 * 1_000_000 + mega_s1 * 1_000_000_000_000 )
+    IO.puts "My function is #{diff} times slower"
+  end
+
+  defp test_core( [], { megasec, sec, microsec } ) do
+    { cur_megasec, cur_sec, cur_microsec } = :erlang.timestamp
+    { cur_megasec - megasec, cur_sec - sec, cur_microsec - microsec }
+  end
+
+  defp test_core( [ message | tail ], timestamp ) do
+    :erlang.md5( message )
+    test_core( tail, timestamp )
+  end
+
+  defp test_myself( [], { megasec, sec, microsec } ) do
+    { cur_megasec, cur_sec, cur_microsec } = :erlang.timestamp
+    { cur_megasec - megasec, cur_sec - sec, cur_microsec - microsec }
+  end
+
+  defp test_myself( [ message | tail ], timestamp ) do
+    Digest.MD5.hash( message )
+    test_myself( tail, timestamp )
+  end
+
+end
