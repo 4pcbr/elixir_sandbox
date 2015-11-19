@@ -1,3 +1,19 @@
+# Both modules generate number sequences like:
+# {0, 0}
+# {0, 1}
+# {1, 0}
+# {1, 1}
+# {0, 2}
+# {1, 2}
+# {2, 0}
+# {2, 1}
+# {2, 2}
+# ...
+#
+#
+# run:  $: iex sequence.ex
+#       $: USE_GEN_SERVER=1 iex sequence.ex
+
 defmodule Sequence do
 
   def next({i, j}) when i < j and j - i == 1, do: { i + 1, 0 }
@@ -77,3 +93,18 @@ end
     :io.format( "~.2f~n", [ time / 1_000_000.0 ] )
   end)
 
+# The results on my 2,6 GHz Intel Core i5
+# 
+# Using the normal recursion
+# 0.09
+# 0.08
+# 0.08
+# 0.08
+# 0.09
+# 
+# Using the gen_server
+# 5.41
+# 5.55
+# 7.88
+# 5.58
+# 5.80
