@@ -18,7 +18,6 @@ defmodule Stack.Server do
     :sys.get_status __MODULE__
   end
 
-
   def handle_call(:pop, _from, stack) do
     [ el | stack_tail ] = stack
     { :reply, el, stack_tail }
