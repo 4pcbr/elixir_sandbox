@@ -8,11 +8,18 @@ defmodule Sequence do
     IO.puts "#{i}, #{j}"
     { i, j }
   end
+  def loop( { i, _j } ) when i > 10_000, do: { :ok }
   def loop( { i, j } ) do
     next({ i, j })
-      |> puts_self
+    #|> puts_self
       |> loop
   end
 
 end
+
+1..5 |>
+  Enum.each(fn(_) ->
+    { time, result } = :timer.tc(Sequence, :loop, [{ 0, 0 }])
+    :io.format( "~.2f~n", [ time / 1_000_000.0 ] )
+  end)
 
