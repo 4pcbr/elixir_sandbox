@@ -1,6 +1,6 @@
 defmodule Dictionary do
 
-  @name __MODULE__
+  @name { :global, __MODULE__ }
 
   def start_link, do: Agent.start_link(fn -> HashDict.new end, name: @name)
 
