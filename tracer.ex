@@ -1,9 +1,8 @@
 defmodule Colorizer do
-  defmacro def_colorizer({ color, _, _ }) do
-    quote do
-      IO.inspect unquote( color )
+  defmacro def_colorizer(color) do
+    quote bind_quoted: [ color: color ] do
       def unquote( :"#{color}_text" )( text ) do
-        IO.ANSI.unquote(color) <> text <> IO.ANSI.default_color
+        IO.ANSI.unquote(color) <> "#{text}" <> IO.ANSI.default_color
       end
     end
   end
@@ -14,16 +13,14 @@ defmodule Tracer do
 
   require Colorizer
 
-  def dump_args( args ) do
-    args |> Enum.map(&inspect/1) |> Enum.join(", ")
-  end
+  [ :black, :blue, :cyan, :green, :magenta, :red, :white, :yellow ] |> Enum.each(&Colorizer.def_colorizer(&1))
 
-  ~w(black blue cyan green magenta red white yellow) |> Enum.each fn( color ) ->
-    Colorizer.def_colorizer( color )
+  def dump_args( args ) do
+    args |> Enum.map(&inspect/1) |> Enum.map(&green_text(&1)) |> Enum.join(", ")
   end
 
   def dump_defn( name, args ) do
-    "#{name}(#{dump_args(args)})"
+    "#{red_text(name)}(#{dump_args(args)})"
   end
 
   defmacro def( definition={name, _, args}, do: content ) do
