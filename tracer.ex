@@ -20,7 +20,22 @@ defmodule Tracer do
   end
 
   def dump_defn( name, args ) do
-    "#{red_text(name)}(#{dump_args(args)})"
+    "#{magenta_text(name)}(#{dump_args(args)})"
+  end
+
+  defmacro def( when_def={ :when, _meta, [ outer_func | guards ] }, do: content ) do
+    quote do
+        Kernel.def( unquote( outer_func )) do
+          IO.puts "> " <> Tracer.yellow_text("Iside the guard")
+          if Enum.all? unquote( guards ) do
+            IO.puts "> " <> Tracer.green_text("Guard conditions passed")
+            result = unquote( content )
+            result
+          else
+            IO.puts "> " <> Tracer.red_text("Guard confitions didn't pass")
+          end
+        end
+    end
   end
 
   defmacro def( definition={name, _, args}, do: content ) do
@@ -28,7 +43,7 @@ defmodule Tracer do
       Kernel.def( unquote( definition ) ) do
         IO.puts "==> call: #{Tracer.dump_defn(unquote(name), unquote(args))}"
         result = unquote( content )
-        IO.puts "<== result: #{result}"
+        IO.puts "<== result: #{Tracer.blue_text(result)}"
         result
       end
     end
@@ -45,9 +60,10 @@ end
 
 defmodule Test do
   use Tracer
-  def puts_sum_three( a, b, c ), do: IO.inspect( a + b + c )
-  def add_list( list ),          do: Enum.reduce( list, 0, &(&1 + &2))
+  def puts_sum_three( a, b, c ),           do: IO.inspect( a + b + c )
+  def add_list( list ) when is_list(list), do: Enum.reduce( list, 0, &(&1 + &2))
 end
 
 Test.puts_sum_three( 1, 2, 3)
 Test.add_list([ 5, 6, 7, 8 ])
+Test.add_list({1,2})
