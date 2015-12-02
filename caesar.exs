@@ -27,4 +27,3 @@ defimpl Caesar, for: [ Binary, String ] do
   end
 
 end
-
