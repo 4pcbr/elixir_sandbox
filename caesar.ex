@@ -5,11 +5,17 @@ end
 
 defimpl Caesar, for: BitString do
 
+  def _inspect( v ) do
+    IO.inspect( v )
+    v
+  end
+
   def encrypt( string, shift ) do
     string
       |> String.to_char_list
       |> Enum.map( &rot_ch(&1, shift) )
-      |> Enum.join("")
+      |> _inspect
+      |> List.to_string
   end
 
   defp rot_ch( ch, shift ) when [ch] >= 'a' and [ch] <= 'z' do
