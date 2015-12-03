@@ -3,7 +3,7 @@ defprotocol Caesar do
   def rot13( string )
 end
 
-defimpl Caesar, for: [ Binary, String ] do
+defimpl Caesar, for: BitString do
 
   def encrypt( string, shift ) do
     string

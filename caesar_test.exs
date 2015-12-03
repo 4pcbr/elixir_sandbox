@@ -26,5 +26,3 @@ defmodule CaesarTest do
   end
 
 end
-
-ExUnit.run()
