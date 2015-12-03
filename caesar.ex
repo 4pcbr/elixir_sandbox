@@ -9,6 +9,7 @@ defimpl Caesar, for: BitString do
     string
       |> String.to_char_list
       |> Enum.map( &rot_ch(&1, shift) )
+      |> Enum.join("")
   end
 
   defp rot_ch( ch, shift ) when [ch] >= 'a' and [ch] <= 'z' do
