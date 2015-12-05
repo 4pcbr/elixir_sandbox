@@ -5,16 +5,10 @@ end
 
 defimpl Caesar, for: BitString do
 
-  def _inspect( v ) do
-    IO.inspect( v )
-    v
-  end
-
   def encrypt( string, shift ) do
     string
       |> String.to_char_list
       |> Enum.map( &rot_ch(&1, shift) )
-      |> _inspect
       |> List.to_string
   end
 
@@ -34,3 +28,16 @@ defimpl Caesar, for: BitString do
   end
 
 end
+
+import :file
+
+hd = File.stream!( "words/scowl/final/english-words.10", [], :line )
+  |> Stream.scan( %{}, fn( word, acc ) ->
+    word = String.strip word
+    w_len = String.length word
+    Map.get_and_update( acc, w_len, fn( coll ) ->
+      { coll, [ word | ( coll || [] ) ] }
+    end )
+  end )
+
+IO.inspect hd
