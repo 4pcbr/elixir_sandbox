@@ -29,15 +29,25 @@ defimpl Caesar, for: BitString do
 
 end
 
-import :file
-
-hd = File.stream!( "words/scowl/final/english-words.10", [], :line )
-  |> Stream.scan( %{}, fn( word, acc ) ->
+File.stream!( "words/scowl/final/english-words.95", [], :line )
+  |> Stream.map( fn word ->
     word = String.strip word
-    w_len = String.length word
-    Map.get_and_update( acc, w_len, fn( coll ) ->
-      { coll, [ word | ( coll || [] ) ] }
-    end )
-  end )
-
-IO.inspect hd
+    { String.length( word ), word }
+  end)
+  |> Enum.reduce(%{}, fn( { w_len, word }, acc ) ->
+    { _, acc } = Map.get_and_update( acc, w_len, fn old_acc ->
+      { old_acc, [ word | ( old_acc || [] ) ] }
+    end)
+    acc
+  end)
+  |> Enum.map( fn { _w_len, coll } ->
+    hash_dict = Enum.reduce( coll, HashDict.new, fn word, acc ->
+      HashDict.put( acc, word, true )
+    end)
+    coll
+      |> Enum.filter( fn ( word ) ->
+        (!String.match?( word, ~r/'/)) && HashDict.has_key?( hash_dict, Caesar.rot13( word ) )
+      end)
+  end)
+  |> List.flatten
+  |> IO.inspect
