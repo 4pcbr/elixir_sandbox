@@ -50,4 +50,4 @@ File.stream!( "words/scowl/final/english-words.95", [], :line )
       end)
   end)
   |> List.flatten
-  |> IO.inspect
+  |> IO.inspect( limit: :infinity )
