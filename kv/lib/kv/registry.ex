@@ -7,7 +7,7 @@ defmodule KV.Registry do
   Starts the registry.
   """
   def start_link() do
-    GenServer.start( __MODULE__, :ok. [] )
+    GenServer.start( __MODULE__, :ok, [] )
   end
 
   @doc """
@@ -25,6 +25,14 @@ defmodule KV.Registry do
   def create( server, name ) do
     GenServer.cast( server, { :create, name } )
   end
+
+  @doc """
+  Stops the registry.
+  """
+  def stop( server ) do
+    GenServer.stop( server )
+  end
+
 
   def init( :ok ) do
     { :ok, %{} }
