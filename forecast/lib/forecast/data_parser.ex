@@ -51,6 +51,7 @@ defmodule Forecast.DataParser do
     pressure_units = units  |> Keyword.get(:pressure)
 
     week = find(channel_tag, "channel.item.forecast")
+                  |> Enum.slice(0..4)
                   |> Enum.map fn (el) ->
                     day = elem(el, 1) |> attrs_to_keywords
                     [
