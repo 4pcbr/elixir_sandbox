@@ -1,9 +1,9 @@
-%{"earmark": {:hex, :earmark, "0.1.17"},
+%{"earmark": {:hex, :earmark, "0.1.17", "a2269e72ff85501bdb58c2de9edc0a9a17a4be2757883eed1f601b30494ed2bf", [:mix], []},
   "erlsom": {:git, "https://github.com/willemdj/erlsom.git", "1f584ee0b043563a63a3870e29b530a0c107828a", []},
   "ex_doc": {:git, "https://github.com/elixir-lang/ex_doc.git", "da430a9ad3a4c2d7021498dad78d7bea055d461d", []},
   "exprintf": {:git, "https://github.com/parroty/exprintf.git", "5e71122ca40b0a9e0c8d4f57d64a8004b9d007ef", []},
-  "hackney": {:hex, :hackney, "1.3.2"},
-  "httpoison": {:hex, :httpoison, "0.7.4"},
-  "idna": {:hex, :idna, "1.0.2"},
+  "hackney": {:hex, :hackney, "1.3.2", "43bd07ab88753f5e136e38fddd2a09124bee25733b03361eeb459d0173fc17ab", [:rebar, :make], [{:idna, "~> 1.0.2", [hex: :idna, optional: false]}, {:ssl_verify_hostname, "~> 1.0.5", [hex: :ssl_verify_hostname, optional: false]}]},
+  "httpoison": {:hex, :httpoison, "0.7.4", "053fa5420c9a2f7792ab49c9963ce67ede8b81dd9a1d0a7123cce54028deeb05", [:mix], [{:hackney, "~> 1.3.1", [hex: :hackney, optional: false]}]},
+  "idna": {:hex, :idna, "1.0.2", "397e3d001c002319da75759b0a81156bf11849c71d565162436d50020cb7265e", [:make], []},
   "parsexml": {:git, "https://github.com/maxlapshin/parsexml.git", "6cbc58ca3c404b25f6775a0ebe8ee1e5a6a7e781", []},
-  "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5"}}
+  "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5", "2e73e068cd6393526f9fa6d399353d7c9477d6886ba005f323b592d389fb47be", [:make], []}}
