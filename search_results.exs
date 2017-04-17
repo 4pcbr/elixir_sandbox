@@ -55,7 +55,7 @@ defmodule SearchFeed do
       _ ->
         blocks |>
           Enum.filter(fn %Block{policies: policies} ->
-            :sets.size(:sets.intersection(features, policies)) > 0
+            :sets.is_subset(features, policies)
           end)
     end
   end
@@ -89,4 +89,4 @@ raw_results= %{
   ],
 }
 
-SearchFeed.search(raw_results, 176, 177, ~w(breakfast)) |> IO.inspect
+SearchFeed.search(raw_results, 176, 177, ~w(breakfast refundable)) |> IO.inspect
