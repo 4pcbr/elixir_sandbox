@@ -44,15 +44,6 @@ defmodule Board do
     end)
   end
 
-  #   defp count_dead(board, ix) do
-  #     neighbours(board, ix) |> Enum.reduce(0, fn cell, acc ->
-  #       case cell do
-  #         0 -> acc + 1
-  #         _ -> acc
-  #       end
-  #     end)
-  #   end
-
   def tick(board = %Board{cells: cells}) do
     %{board | cells: cells |> Enum.map(fn {ix, state} ->
       case state do
@@ -81,7 +72,10 @@ defmodule Board do
     |> Enum.sort
     |> Enum.chunk(width)
     |> Enum.map(fn chunk ->
-      chunk |> Enum.map(&Map.get(cells,&1)) |> Enum.map(&Integer.to_string/1) |> Enum.join(" ")
+      chunk
+      |> Enum.map(&Map.get(cells,&1))
+      |> Enum.map(&Integer.to_string/1)
+      |> Enum.join(" ")
     end)
     |> Enum.join("\n")
   end
@@ -104,17 +98,45 @@ defmodule Board do
 
 end
 
-ExUnit.start()
-defmodule BoardTest do
-  use ExUnit.Case
+defmodule GameOfLife do
+  def play_blinker do
+    Board.init(5, 5, [
+      0,0,0,0,0,
+      0,0,1,0,0,
+      0,0,1,0,0,
+      0,0,1,0,0,
+      0,0,0,0,0
+    ]) |> Board.play
+  end
 
-  test "init with cells" do
-    assert Board.init(2, 2, [
-      1, 0,
-      0, 1
-    ]) == %Board{width: 2, height: 2, cells: %{0 => 1, 1 => 0, 2 => 0, 3 => 1}}
+  def play_r_pentomino do
+    Board.init(5, 5, [
+      0,0,0,0,0,
+      0,0,1,1,0,
+      0,1,1,0,0,
+      0,0,1,0,0,
+      0,0,0,0,0
+    ]) |> Board.play
+  end
+
+  def play_toad do
+    Board.init(6, 6, [
+      0,0,0,0,0,0,
+      0,0,0,0,0,0,
+      0,0,1,1,1,0,
+      0,1,1,1,0,0,
+      0,0,0,0,0,0,
+      0,0,0,0,0,0
+    ]) |> Board.play
+  end
+
+  def play_diehard do
+    Board.init(10, 5, [
+      0,0,0,0,0,0,0,0,0,0,
+      0,0,0,0,0,0,0,1,0,0,
+      0,1,1,0,0,0,0,0,0,0,
+      0,0,1,0,0,0,1,1,1,0,
+      0,0,0,0,0,0,0,0,0,0
+    ]) |> Board.play
   end
 end
-
-# Board.play(Board.init(5, 5, [ 0,0,0,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0 ])) # Blinker
-# Board.play(Board.init(6, 6, [ 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,1,1,1,0, 0,1,1,1,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0 ])) # Toad
