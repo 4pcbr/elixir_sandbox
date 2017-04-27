@@ -7,14 +7,14 @@ defmodule Board do
   end
 
   def init(width, height, cells) when is_integer(width) and is_integer(height) and is_list(cells) and length(cells) == width * height do
-    %Board{width: width, height: height, cells: cells |> Enum.with_index |> Enum.into(%{}, fn {v, k} -> {k, v} end)}
+    %Board{width: width, height: height, cells: cells |> :array.from_list}
   end
 
   def cell(%Board{width: width, height: height, cells: cells}, x, y) do
     pos = y * width + x
     case pos > width * height do
       true -> {:error, :out_of_bound}
-      _ -> { :ok, Map.get(cells, pos) }
+      _ -> { :ok, :array.get(pos, cells) }
     end
   end
 
@@ -31,7 +31,13 @@ defmodule Board do
           pos - width - 1, pos - width, pos - width + 1,
           pos         - 1,              pos         + 1,
           pos + width - 1, pos + width, pos + width + 1
-        ] |> Enum.map(&Map.get(cells, &1))
+        ] |> Enum.map(fn ix ->
+          case ix do
+            v when v < 0 -> nil
+            v when v > width * height -> nil
+            v -> :array.get(v, cells)
+          end
+        end)
     end
   end
 
@@ -45,35 +51,34 @@ defmodule Board do
   end
 
   def tick(board = %Board{cells: cells}) do
-    %{board | cells: cells |> Enum.map(fn {ix, state} ->
+    cells = :array.map(fn ix, state ->
       case state do
         1 ->
           case count_alive(board, ix) do
-            v when v < 2 -> {ix, 0} # underpopulation
-            v when v > 3 -> {ix, 0} # overpopulation
-            _ -> {ix, 1}
+            v when v < 2 -> 0 # underpopulation
+            v when v > 3 -> 0 # overpopulation
+            _ -> 1
           end
         0 ->
           case count_alive(board, ix) do
-            3 -> {ix, 1} # reproduction
-            _ -> {ix, 0}
+            3 -> 1 # reproduction
+            _ -> 0
           end
       end
-    end) |> Enum.into(%{})}
+    end, cells)
+    %{board | cells: cells}
   end
 
   def is_over?(%Board{cells: cells}) do
-    Map.values(cells) |> Enum.filter(fn x -> x > 0 end) |> length == 0
+    cells |> :array.to_list |> Enum.filter(fn x -> x > 0 end) |> length == 0
   end
 
   def format(board = %Board{width: width, height: height, cells: cells}) do
     cells
-    |> Map.keys
-    |> Enum.sort
+    |> :array.to_list
     |> Enum.chunk(width)
     |> Enum.map(fn chunk ->
       chunk
-      |> Enum.map(&Map.get(cells,&1))
       |> Enum.map(&Integer.to_string/1)
       |> Enum.join(" ")
     end)
