@@ -64,11 +64,8 @@ defmodule Array do
 
   def get(arr = %Array{ type: @type_int32, capacity: capacity, body: body }, pos) when pos >= 0 and pos < capacity do
     pre_size = pos * 32
-    << _pre :: size(pre_size), oct1 :: 8, oct2 :: 8, oct3 :: 8, oct4 :: 8, _rest :: binary >> = body
-    :erlang.bsl(oct1, 24) +
-    :erlang.bsl(oct2, 16) +
-    :erlang.bsl(oct3, 8)  +
-    oct4
+    << _pre :: size(pre_size), val :: signed-integer-size(32), _rest :: binary >> = body
+    val
   end
 
 end
