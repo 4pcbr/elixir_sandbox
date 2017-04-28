@@ -8,61 +8,43 @@ defmodule Array do
   @type_int64   5
   @type_float32 6
   @type_float64 7
-  @max_capacity 4294967296
 
-  defstruct type:     @type_undef,
-            capacity: 0,
-            body:     <<>>
-
-
-  def new(capacity, :boolean) when is_integer(capacity) and capacity >= 0 and capacity < @max_capacity do
-    %Array{
-      type:     @type_boolean,
-      capacity: capacity,
-      body:     << 0 :: size(capacity) >>
-    }
+  def new(capacity, :boolean) when is_integer(capacity) and capacity >= 0 do
+    { :array, @type_boolean, capacity, << 0 :: size(capacity) >> }
   end
 
-  def new(capacity, :uint32) when is_integer(capacity) and capacity >= 0 and capacity < @max_capacity do
+  def new(capacity, :uint32) when is_integer(capacity) and capacity >= 0 do
     body_size = capacity * 32
-    %Array{
-      type: @type_uint32,
-      capacity: capacity,
-      body: << 0 :: size(body_size) >>
-    }
+    { :array, @type_uint32, capacity, << 0 :: size(body_size) >> }
   end
 
-  def new(capacity, :int32) when is_integer(capacity) and capacity >= 0 and capacity < @max_capacity do
+  def new(capacity, :int32) when is_integer(capacity) and capacity >= 0 do
     body_size = capacity * 32
-    %Array{
-      type: @type_int32,
-      capacity: capacity,
-      body: << 0 :: size(body_size) >>
-    }
+    { :array, @type_int32, capacity, << 0 :: size(body_size) >> }
   end
 
-  def set(arr = %Array{ type: @type_boolean, capacity: capacity, body: body }, pos, true) when pos >= 0 and pos < capacity do
-    %{arr | body: :erlang.band(body, :erlang.bsl(1, pos)) }
+  def set(arr = { :array, @type_boolean, capacity, body }, pos, true) when pos >= 0 and pos < capacity do
+    :erlang.setelement(4, arr, :erlang.band(body, :erlang.bsl(1, pos)))
   end
 
-  def set(arr = %Array{ type: @type_boolean, capacity: capacity, body: body }, pos, false) when pos >= 0 and pos < capacity do
-    %{arr | body: :erlang.bor(body, :erlang.bnot(:erlang.bsl(1, pos))) }
+  def set(arr = { :array, @type_boolean, capacity, body }, pos, false) when pos >= 0 and pos < capacity do
+    :erlang.setelement(4, arr, :erlang.bor(body, :erlang.bnot(:erlang.bsl(1, pos))))
   end
 
-  def set(arr = %Array{ type: @type_int32, capacity: capacity, body: body }, pos, val) when pos >= 0 and pos < capacity do
+  def set(arr = { :array, @type_int32, capacity, body }, pos, val) when pos >= 0 and pos < capacity do
     pre_size = pos * 32
     << pre :: size(pre_size), _ :: size(32), post :: binary >> = body
-    %{arr | body: << pre :: size(pre_size), val :: size(32), post :: binary >>}
+    :erlang.setelement(4, arr, << pre :: size(pre_size), val :: size(32), post :: binary >>)
   end
 
-  def get(arr = %Array{ type: @type_boolean, capacity: capacity, body: body }, pos) when pos >= 0 and pos < capacity do
+  def get({ :array, @type_boolean, capacity, body }, pos) when pos >= 0 and pos < capacity do
     case :erlang.band(1, :erlang.bsr(body, pos)) do
       1 -> true
       0 -> false
     end
   end
 
-  def get(arr = %Array{ type: @type_int32, capacity: capacity, body: body }, pos) when pos >= 0 and pos < capacity do
+  def get({ :array, @type_int32, capacity, body }, pos) when pos >= 0 and pos < capacity do
     pre_size = pos * 32
     << _pre :: size(pre_size), val :: signed-integer-size(32), _rest :: binary >> = body
     val
@@ -75,19 +57,19 @@ defmodule ArrayTest do
   use ExUnit.Case
 
   test "new boolean zero size" do
-    assert Array.new(0, :boolean) == %Array{ type: 1, capacity: 0, body: <<>> }
+    assert Array.new(0, :boolean) == { :array, 1, 0, <<>> }
   end
 
   test "new boolean 1 element" do
-    assert Array.new(1, :boolean) == %Array{ type: 1, capacity: 1, body: << 0 :: size(1) >> }
+    assert Array.new(1, :boolean) == { :array, 1, 1, << 0 :: size(1) >> }
   end
 
   test "new int32 zero size" do
-    assert Array.new(0, :int32) == %Array{ type: 3, capacity: 0, body: <<>> }
+    assert Array.new(0, :int32) == { :array, 3, 0, <<>> }
   end
 
   test "new int32 1 element" do
-    assert Array.new(1, :int32) == %Array{ type: 3, capacity: 1, body: << 0, 0, 0, 0 >> }
+    assert Array.new(1, :int32) == { :array, 3, 1, << 0, 0, 0, 0 >> }
   end
 
   test "get int32 oct1 pos 0/1" do
